@@ -16,6 +16,18 @@ try:
     flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
 except ImportError:
     flags = None
+l = []
+try:
+    contacts = pd.read_csv('allContacts.csv')
+    names = list(contacts['Name'])
+    for x in df['Name']:
+        if x not in names:
+            l.append(1)
+        else:
+            l.append(0)
+except:
+    for x in df['Name']:
+        l.append(1)
 
 # If modifying these scopes, delete your previously saved credentials
 # at ~/.credentials/people.googleapis.com-python-quickstart.json
@@ -49,8 +61,10 @@ def get_credentials():
             credentials = tools.run(flow, store)
         print('Storing credentials to ' + credential_path)
     return credentials
-for i in range(df.shape[0]):
 
+for i in range(df.shape[0]):
+    if l[i] == 0:
+        continue
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('people', 'v1', http=http, discoveryServiceUrl='https://people.googleapis.com/$discovery/rest')
